@@ -1,7 +1,9 @@
 {
-  "author": "",
-  "name": "",
+  "author": "Peter Müller <munter@fumle.dk>",
+  "name": "angular-example",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "grunt-reduce": "=0.1.5"
+  },
   "devDependencies": {}
 }
