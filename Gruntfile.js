@@ -101,68 +101,47 @@ module.exports = function( grunt ) {
 
     // Build configuration
     // -------------------
+    reduce: {
+      // Source folder
+      root: 'app', // Default: 'app',
 
-    // the staging directory used during the process
-    staging: 'temp',
-    // final build output
-    output: 'dist',
+      // Build destination folder
+      outRoot: 'dist', // Default: 'dist',
 
-    mkdirs: {
-      staging: 'app/'
-    },
+      // Root of your CDN. Optional
+      //cdnRoot: 'https://my.amazon.s3.bucket',
 
-    // Below, all paths are relative to the staging directory, which is a copy
-    // of the app/ directory. Any .gitignore, .ignore and .buildignore file
-    // that might appear in the app/ tree are used to ignore these values
-    // during the copy process.
+      // minimatch patterns of files to include as base assets
+      // Dependencies of these will be automatically populated
+      // Paths are relative to reduce.root ('app')
+      include: [
+        '**/*.html',
+        '**/.htaccess',
+        '*.txt',
+        '*.ico'
+      ],
 
-    // concat css/**/*.css files, inline @import, output a single minified css
-    css: {
-      'styles/main.css': ['styles/**/*.css']
-    },
+      // Compile less files and remove less.js from application
+      less: true, // Default: true
 
-    // renames JS/CSS to prepend a hash of their contents for easier
-    // versioning
-    rev: {
-      js: 'scripts/**/*.js',
-      css: 'styles/**/*.css',
-      img: 'images/**'
-    },
+      // Run all available jpeg and png optimizations on images
+      // For maximum efficiency install jpegtran, optipng, pngcrush and pngquant
+      optimizeImages: true, // Default: true
 
-    // usemin handler should point to the file containing
-    // the usemin blocks to be parsed
-    'usemin-handler': {
-      html: 'index.html'
-    },
+      // Create a cache manifest file
+      // If one already exists it will be ammended with static assets
+      manifest: false, // Default: false
 
-    // update references in HTML/CSS to revved files
-    usemin: {
-      html: ['**/*.html'],
-      css: ['**/*.css']
-    },
+      // Set the 'async'-attribute on all script tags
+      asyncScripts: true, // Default: true
 
-    // HTML minification
-    html: {
-      files: ['**/*.html']
-    },
+      // Pretty print assets. Good for debugging
+      pretty: false, // Default: false
 
-    // Optimizes JPGs and PNGs (with jpegtran & optipng)
-    img: {
-      dist: '<config:rev.img>'
-    },
-
-    // rjs configuration. You don't necessarily need to specify the typical
-    // `path` configuration, the rjs task will parse these values from your
-    // main module, using http://requirejs.org/docs/optimization.html#mainConfigFile
-    //
-    // name / out / mainConfig file should be used. You can let it blank if
-    // you're using usemin-handler to parse rjs config from markup (default
-    // setup)
-    rjs: {
-      // no minification, is done by the min task
-      optimize: 'none',
-      baseUrl: './scripts',
-      wrap: true
+      // Inline CSS backgrounds below this byte threshold as data-uris
+      // There will be an old IE fallback to the original image
+      // 0 disables.
+      inlineSize: 4096 // Default: 4096
     }
   });
 
@@ -174,4 +153,8 @@ module.exports = function( grunt ) {
       done(err);
     });
   });
+
+  grunt.loadNpmTasks('grunt-reduce');
+
+  grunt.registerTask('build', ['coffee', 'reduce']);
 };
